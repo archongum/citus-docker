@@ -13,7 +13,8 @@ ENV CITUS_VERSION ${VERSION}.citus-1
 ENV POSTGRES_DB citus
 ENV PGDATA /data
 
-ENV LANG 'zh_CN.UTF-8'
+RUN localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8
+ENV LANG zh_CN.UTF-8
 ENV LC_COLLATE 'zh_CN.UTF-8'
 ENV LC_CTYPE 'zh_CN.UTF-8'
 
