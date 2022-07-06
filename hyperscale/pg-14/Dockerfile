@@ -13,6 +13,9 @@ ENV CITUS_VERSION ${VERSION}.citus-1
 ENV POSTGRES_DB citus
 ENV PGDATA /data
 
+ENV LC_COLLATE 'zh_CN.UTF-8'
+ENV LC_CTYPE 'zh_CN.UTF-8'
+
 # install Citus and needed extension on hyperscale
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -29,8 +32,7 @@ RUN apt-get update \
                           postgresql-14-tdigest \
                           postgresql-14-mysql-fdw \
                           postgresql-14-cron \
-    && apt-get purge -y --auto-remove curl \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get purge -y --auto-remove curl
 
 # set shared_preload_libraries to the list of extensions that needs to be loaded when postgresql starts
 RUN echo "shared_preload_libraries='citus,pg_cron,pg_stat_statements'" >> /usr/share/postgresql/postgresql.conf.sample
