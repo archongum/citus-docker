@@ -1,13 +1,4 @@
 FROM registry.cn-guangzhou.aliyuncs.com/archongum/postgres:14.4
-
-# TODO: Do this in postgres images
-ENV PATH $PATH:/usr/local/pgsql/bin
-ENV PG_MAJOR 14
-ENV PG_VERSION 14.4-1.pgdg110+1
-ENTRYPOINT ["docker-entrypoint.sh"]
-STOPSIGNAL SIGINT
-EXPOSE 5432
-
 ARG VERSION=10.2.2
 LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.name="Citus" \
