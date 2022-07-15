@@ -13,15 +13,15 @@ jobs:
  
       - name: Login to Aliyun Registry
         uses: docker/login-action@v2
-        if: ${{ contains( github.ref_name, 'main' ) }}
+        if: ${{ contains( github.ref_name, 'block' ) }}
         with:
           registry: registry.cn-guangzhou.aliyuncs.com
           username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
           password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
       - name: Push to Aliyun Registry
-        if: ${{ contains( github.ref_name, 'main' ) }}
+        if: ${{ contains( github.ref_name, 'block' ) }}
         env:
-          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/hyperscale:v11.0.3-pg14
+          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/hyperscale:v11.0.3-pg14-large-block
         run: |
           # show size
           du -sh ./*
