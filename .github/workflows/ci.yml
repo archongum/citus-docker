@@ -26,7 +26,7 @@ jobs:
           # show size
           du -sh ./*
           # build
-          docker build -f hyperscale/pg-14/Dockerfile --tag $IMAGE_NAME .
+          docker build -f hyperscale/pg-14-block-32k/Dockerfile --tag $IMAGE_NAME .
           # show images
           docker images | head -n 10
           # push
