@@ -1,5 +1,5 @@
-FROM postgres:14.1
-ARG VERSION=10.2.2
+FROM postgres:14.4
+ARG VERSION=11.0.4
 LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.name="Citus" \
       org.label-schema.description="Scalable PostgreSQL for multi-tenant and real-time workloads" \
@@ -9,6 +9,28 @@ LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.version=${VERSION} \
       org.label-schema.schema-version="1.0"
 
+## Mongo FDW
+ARG MONGO_FDW_VERSION=5_4_0
+ARG MONGO_FDW_URL=https://github.com/EnterpriseDB/mongo_fdw/archive/REL-${MONGO_FDW_VERSION}.tar.gz
+ARG SOURCE_FILES=/tmp/mongo_fdw
+# compilation deps
+RUN apt-get update\
+    && apt-get install -y --no-install-recommends wget ca-certificates make gcc cmake pkg-config postgresql-server-dev-14 libssl-dev libzstd-dev \
+    # mongo_fdw
+    && export PKG_CONFIG_PATH=${SOURCE_FILES}/mongo-c-driver/src/libmongoc/src:${SOURCE_FILES}/mongo-c-driver/src/libbson/src \
+    && export LD_LIBRARY_PATH=/lib \
+    && mkdir -p ${SOURCE_FILES} \
+    && wget -O - ${MONGO_FDW_URL} | tar -zx --strip-components=1 -C ${SOURCE_FILES} \
+    && cd ${SOURCE_FILES} \
+    # install
+    && ./autogen.sh --with-master \
+    && make \
+    && make install \
+    # cleanup
+    && apt-get purge -y --auto-remove wget ca-certificates make gcc cmake pkg-config postgresql-server-dev-14 libssl-dev libzstd-dev \
+    && cd - && rm -rf ${SOURCE_FILES}
+
+## Citus
 ENV CITUS_VERSION ${VERSION}.citus-1
 ENV POSTGRES_DB citus
 ENV PGDATA /data
@@ -25,7 +47,7 @@ RUN apt-get update \
        ca-certificates \
        curl \
     && curl -s https://install.citusdata.com/community/deb.sh | bash \
-    && apt-get install -y postgresql-$PG_MAJOR-citus-10.2=$CITUS_VERSION \
+    && apt-get install -y postgresql-$PG_MAJOR-citus-11.0=$CITUS_VERSION \
                           postgresql-$PG_MAJOR-hll=2.16.citus-1 \
                           postgresql-$PG_MAJOR-topn=2.4.0 \
                           postgresql-14-postgis-3 \

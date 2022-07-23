@@ -29,3 +29,5 @@ CREATE EXTENSION postgis_raster;
 CREATE EXTENSION postgis_sfcgal;
 CREATE EXTENSION postgis_tiger_geocoder;
 CREATE EXTENSION postgis_topology;
+CREATE EXTENSION mysql_fdw;
+CREATE EXTENSION mongo_fdw;
