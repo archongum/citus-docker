@@ -88,7 +88,7 @@ RUN apt-get update \
 
 ## Citus
 FROM postgres:14.4
-ARG VERSION=11.0.4
+ARG VERSION=11.0.5
 LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.name="Citus" \
       org.label-schema.description="Scalable PostgreSQL for multi-tenant and real-time workloads" \
