@@ -88,7 +88,7 @@ RUN apt-get update \
 
 ## Citus
 FROM postgres:14.5
-ARG VERSION=11.0.6
+ARG VERSION=11.1.1
 LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.name="Citus" \
       org.label-schema.description="Scalable PostgreSQL for multi-tenant and real-time workloads" \
@@ -97,6 +97,7 @@ LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.vendor="Citus Data, Inc." \
       org.label-schema.version=${VERSION} \
       org.label-schema.schema-version="1.0"
+
 ENV CITUS_VERSION ${VERSION}.citus-1
 ENV POSTGRES_DB citus
 ENV PGDATA /data
@@ -137,7 +138,7 @@ RUN apt-get update \
        ca-certificates \
        curl \
     && curl -s https://install.citusdata.com/community/deb.sh | bash \
-    && apt-get install -y postgresql-$PG_MAJOR-citus-11.0=$CITUS_VERSION \
+    && apt-get install -y postgresql-$PG_MAJOR-citus-11.1=$CITUS_VERSION \
                           postgresql-$PG_MAJOR-hll=2.16.citus-1 \
                           postgresql-$PG_MAJOR-topn=2.4.0 \
                           postgresql-14-postgis-3 \
@@ -148,7 +149,8 @@ RUN apt-get update \
                           postgresql-14-mysql-fdw \
                           postgresql-14-cron \
                           default-jdk \
-    && apt-get purge -y --auto-remove curl
+    && apt-get purge -y --auto-remove curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # set shared_preload_libraries to the list of extensions that needs to be loaded when postgresql starts
 RUN echo "shared_preload_libraries='citus,pg_cron,pg_stat_statements'" >> /usr/share/postgresql/postgresql.conf.sample
