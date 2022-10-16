@@ -1,5 +1,5 @@
 ## Mongo FDW
-FROM postgres:14.5 as mongo-fdw-builder
+FROM postgres:15.0 as mongo-fdw-builder
 ARG MONGO_FDW_VERSION=5_4_0
 ARG MONGO_FDW_URL=https://github.com/EnterpriseDB/mongo_fdw/archive/REL-${MONGO_FDW_VERSION}.tar.gz
 ARG SOURCE_FILES=/tmp/mongo_fdw
@@ -18,7 +18,7 @@ RUN apt-get update \
     && cd - && rm -rf ${SOURCE_FILES}
 
 ## Clickhouse FDW
-FROM postgres:14.5 as clickhouse-fdw-builder
+FROM postgres:15.0 as clickhouse-fdw-builder
 ARG CLICKHOUSE_FDW_COMMIT_HASH=1c1235e
 RUN apt-get update \
     # clickhouse_fdw build
@@ -33,7 +33,7 @@ RUN apt-get update \
     && cd - && rm -rf /tmp/clickhouse_fdw
 
 ## HDFS FDW
-FROM postgres:14.5 as hdfs-fdw-builder
+FROM postgres:15.0 as hdfs-fdw-builder
 ARG HDFS_FDW_VERSION=v2.2.0
 ARG HDFS_FDW_URL=https://github.com/EnterpriseDB/hdfs_fdw/archive/refs/tags/${HDFS_FDW_VERSION}.tar.gz
 ARG THRIFT_VERSION=0.16.0
@@ -74,7 +74,7 @@ RUN apt-get update \
     && cd /opt/packages/hadoop && wget https://github.com/timveil/hive-jdbc-uber-jar/releases/download/v1.9-2.6.5/hive-jdbc-uber-2.6.5.0-292.jar
 
 ## jdbc fdw
-FROM postgres:14.5 as jdbc-fdw-builder
+FROM postgres:15.0 as jdbc-fdw-builder
 ARG JDBC_FDW_VERSION=v0.2.0
 ARG JDBC_FDW_URL=https://github.com/pgspider/jdbc_fdw/archive/refs/tags/${JDBC_FDW_VERSION}.tar.gz
 RUN apt-get update \
@@ -87,7 +87,7 @@ RUN apt-get update \
     && USE_PGXS=1 LIBDIR=/usr/lib make install
 
 ## Citus
-FROM postgres:14.5
+FROM postgres:15.0
 ARG VERSION=11.1.2
 LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.name="Citus" \
@@ -104,14 +104,14 @@ ENV PGDATA /data
 
 ## mongo fdw
 COPY --from=mongo-fdw-builder /lib/ /lib/
-COPY --from=mongo-fdw-builder /usr/lib/postgresql/14/lib/ /usr/lib/postgresql/14/lib/
-COPY --from=mongo-fdw-builder /usr/share/postgresql/14/extension/ /usr/share/postgresql/14/extension/
+COPY --from=mongo-fdw-builder /usr/lib/postgresql/15/lib/ /usr/lib/postgresql/15/lib/
+COPY --from=mongo-fdw-builder /usr/share/postgresql/15/extension/ /usr/share/postgresql/15/extension/
 ## clickhouse fdw
-COPY --from=clickhouse-fdw-builder /usr/lib/postgresql/14/lib/ /usr/lib/postgresql/14/lib/
-COPY --from=clickhouse-fdw-builder /usr/share/postgresql/14/extension/ /usr/share/postgresql/14/extension/
+COPY --from=clickhouse-fdw-builder /usr/lib/postgresql/15/lib/ /usr/lib/postgresql/15/lib/
+COPY --from=clickhouse-fdw-builder /usr/share/postgresql/15/extension/ /usr/share/postgresql/15/extension/
 ## hdfs-fdw
-COPY --from=hdfs-fdw-builder /usr/lib/postgresql/14/lib/ /usr/lib/postgresql/14/lib/
-COPY --from=hdfs-fdw-builder /usr/share/postgresql/14/extension/ /usr/share/postgresql/14/extension/
+COPY --from=hdfs-fdw-builder /usr/lib/postgresql/15/lib/ /usr/lib/postgresql/15/lib/
+COPY --from=hdfs-fdw-builder /usr/share/postgresql/15/extension/ /usr/share/postgresql/15/extension/
 # thrift
 COPY --from=hdfs-fdw-builder /opt/packages/thrift/bin/ /usr/local/bin/
 COPY --from=hdfs-fdw-builder /opt/packages/thrift/include/ /usr/local/include/
@@ -123,8 +123,8 @@ COPY --from=hdfs-fdw-builder /opt/packages/libhive/HiveJdbcClient-1.0.jar /opt/p
 COPY --from=hdfs-fdw-builder /opt/packages/hadoop /opt/packages/hadoop
 ## jdbc-fdw
 # TODO 是否需要内置JDBC Driver Jar?
-COPY --from=jdbc-fdw-builder /usr/lib/postgresql/14/lib/ /usr/lib/postgresql/14/lib/
-COPY --from=jdbc-fdw-builder /usr/share/postgresql/14/extension/ /usr/share/postgresql/14/extension/
+COPY --from=jdbc-fdw-builder /usr/lib/postgresql/15/lib/ /usr/lib/postgresql/15/lib/
+COPY --from=jdbc-fdw-builder /usr/share/postgresql/15/extension/ /usr/share/postgresql/15/extension/
 
 RUN localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -141,13 +141,13 @@ RUN apt-get update \
     && apt-get install -y postgresql-$PG_MAJOR-citus-11.1=$CITUS_VERSION \
                           postgresql-$PG_MAJOR-hll=2.17.citus-1 \
                           postgresql-$PG_MAJOR-topn=2.5.0.citus-1 \
-                          postgresql-14-postgis-3 \
+                          postgresql-15-postgis-3 \
                           postgresql-plperl-14 \
                           postgresql-contrib \
-                          postgresql-14-partman \
-                          postgresql-14-tdigest \
-                          postgresql-14-mysql-fdw \
-                          postgresql-14-cron \
+                          postgresql-15-partman \
+                          postgresql-15-tdigest \
+                          postgresql-15-mysql-fdw \
+                          postgresql-15-cron \
                           default-jdk \
     && apt-get purge -y --auto-remove curl \
     && rm -rf /var/lib/apt/lists/*
