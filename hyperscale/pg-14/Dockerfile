@@ -1,5 +1,5 @@
 ## Mongo FDW
-FROM postgres:14.6 as mongo-fdw-builder
+FROM postgres:14.7 as mongo-fdw-builder
 ARG MONGO_FDW_VERSION=5_5_0
 ARG MONGO_FDW_URL=https://github.com/EnterpriseDB/mongo_fdw/archive/REL-${MONGO_FDW_VERSION}.tar.gz
 ARG SOURCE_FILES=/tmp/mongo_fdw
@@ -18,7 +18,7 @@ RUN apt-get update \
     && cd - && rm -rf ${SOURCE_FILES}
 
 ## Clickhouse FDW
-FROM postgres:14.6 as clickhouse-fdw-builder
+FROM postgres:14.7 as clickhouse-fdw-builder
 ARG CLICKHOUSE_FDW_COMMIT_HASH=a2cd63d
 RUN apt-get update \
     # clickhouse_fdw build
@@ -33,7 +33,7 @@ RUN apt-get update \
     && cd - && rm -rf /tmp/clickhouse_fdw
 
 ## HDFS FDW
-FROM postgres:14.6 as hdfs-fdw-builder
+FROM postgres:14.7 as hdfs-fdw-builder
 ARG HDFS_FDW_VERSION=v2.3.0
 ARG HDFS_FDW_URL=https://github.com/EnterpriseDB/hdfs_fdw/archive/refs/tags/${HDFS_FDW_VERSION}.tar.gz
 ARG THRIFT_VERSION=0.16.0
@@ -74,7 +74,7 @@ RUN apt-get update \
     && cd /opt/packages/hadoop && wget https://github.com/timveil/hive-jdbc-uber-jar/releases/download/v1.9-2.6.5/hive-jdbc-uber-2.6.5.0-292.jar
 
 ## jdbc fdw
-FROM postgres:14.6 as jdbc-fdw-builder
+FROM postgres:14.7 as jdbc-fdw-builder
 ARG JDBC_FDW_VERSION=v0.2.0
 ARG JDBC_FDW_URL=https://github.com/pgspider/jdbc_fdw/archive/refs/tags/${JDBC_FDW_VERSION}.tar.gz
 RUN apt-get update \
@@ -87,8 +87,8 @@ RUN apt-get update \
     && USE_PGXS=1 LIBDIR=/usr/lib make install
 
 ## Citus
-FROM postgres:14.6
-ARG VERSION=11.1.5
+FROM postgres:14.7
+ARG VERSION=11.2.0
 LABEL maintainer="Citus Data https://citusdata.com" \
       org.label-schema.name="Citus" \
       org.label-schema.description="Scalable PostgreSQL for multi-tenant and real-time workloads" \
@@ -138,7 +138,7 @@ RUN apt-get update \
        ca-certificates \
        curl \
     && curl -s https://install.citusdata.com/community/deb.sh | bash \
-    && apt-get install -y postgresql-$PG_MAJOR-citus-11.1=$CITUS_VERSION \
+    && apt-get install -y postgresql-$PG_MAJOR-citus-11.2=$CITUS_VERSION \
                           postgresql-$PG_MAJOR-hll=2.17.citus-1 \
                           postgresql-$PG_MAJOR-topn=2.5.0.citus-1 \
                           postgresql-14-postgis-3 \
