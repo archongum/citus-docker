@@ -4,7 +4,7 @@ ARG MONGO_FDW_VERSION=5_4_0
 ARG MONGO_FDW_URL=https://github.com/EnterpriseDB/mongo_fdw/archive/REL-${MONGO_FDW_VERSION}.tar.gz
 ARG SOURCE_FILES=/tmp/mongo_fdw
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends wget ca-certificates make gcc cmake pkg-config postgresql-server-dev-14 libssl-dev libzstd-dev \
+    && apt-get install -y --no-install-recommends wget ca-certificates make gcc cmake pkg-config postgresql-server-dev-15 libssl-dev libzstd-dev \
     # mongo_fdw build
     && export PKG_CONFIG_PATH=${SOURCE_FILES}/mongo-c-driver/src/libmongoc/src:${SOURCE_FILES}/mongo-c-driver/src/libbson/src \
     && export LD_LIBRARY_PATH=/lib \
@@ -22,7 +22,7 @@ FROM postgres:15.0 as clickhouse-fdw-builder
 ARG CLICKHOUSE_FDW_COMMIT_HASH=1c1235e
 RUN apt-get update \
     # clickhouse_fdw build
-    && apt-get install -y --no-install-recommends openssl ca-certificates libssl-dev postgresql-server-dev-14 libcurl4-openssl-dev automake make gcc cmake autoconf pkg-config libtool uuid-dev git build-essential \
+    && apt-get install -y --no-install-recommends openssl ca-certificates libssl-dev postgresql-server-dev-15 libcurl4-openssl-dev automake make gcc cmake autoconf pkg-config libtool uuid-dev git build-essential \
     && cd /tmp \
     && git clone https://github.com/adjust/clickhouse_fdw.git clickhouse_fdw \
     && cd clickhouse_fdw \
@@ -38,7 +38,7 @@ ARG HDFS_FDW_VERSION=v2.2.0
 ARG HDFS_FDW_URL=https://github.com/EnterpriseDB/hdfs_fdw/archive/refs/tags/${HDFS_FDW_VERSION}.tar.gz
 ARG THRIFT_VERSION=0.16.0
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends default-jdk ant wget ca-certificates openssl libssl-dev make gcc g++ cmake autoconf automake pkg-config file postgresql-server-dev-14 libssl-dev libzstd-dev libboost-all-dev libtool \
+    && apt-get install -y --no-install-recommends default-jdk ant wget ca-certificates openssl libssl-dev make gcc g++ cmake autoconf automake pkg-config file postgresql-server-dev-15 libssl-dev libzstd-dev libboost-all-dev libtool \
     && mkdir -p /tmp/hdfs_fdw \
     && wget -O - ${HDFS_FDW_URL} | tar -zx --strip-components=1 -C /tmp/hdfs_fdw \
     && cd /tmp/hdfs_fdw \
@@ -78,7 +78,7 @@ FROM postgres:15.0 as jdbc-fdw-builder
 ARG JDBC_FDW_VERSION=v0.2.0
 ARG JDBC_FDW_URL=https://github.com/pgspider/jdbc_fdw/archive/refs/tags/${JDBC_FDW_VERSION}.tar.gz
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends default-jdk wget ca-certificates make gcc cmake pkg-config postgresql-server-dev-14 \
+    && apt-get install -y --no-install-recommends default-jdk wget ca-certificates make gcc cmake pkg-config postgresql-server-dev-15 \
     && mkdir -p /tmp/jdbc_fdw \
     && wget -O - ${JDBC_FDW_URL} | tar -zx --strip-components=1 -C /tmp/jdbc_fdw \
     && cd /tmp/jdbc_fdw \
