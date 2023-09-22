@@ -21,7 +21,7 @@ jobs:
       - name: Push to Aliyun Registry
         if: ${{ contains( github.ref_name, 'main' ) }}
         env:
-          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/hyperscale:v11.1.5-pg14-ck-mg-hdfs-jdbc-fdw
+          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/hyperscale:v11.3.0-pg14-ck-mg-hdfs-jdbc-fdw
         run: |
           # show size
           du -sh ./*
